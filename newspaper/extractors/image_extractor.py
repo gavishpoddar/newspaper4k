@@ -23,6 +23,7 @@ class ImageExtractor:
     def __init__(self, config: Configuration) -> None:
         self.config = config
         self.top_image: Optional[str] = None
+        self.top_images: List[str] = []
         self.meta_image: Optional[str] = None
         self.images: List[str] = []
         self.favicon: Optional[str] = None
