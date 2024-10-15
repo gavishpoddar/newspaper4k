@@ -47,7 +47,7 @@ class ImageExtractor:
             # were not found in some cases (times_001.html)
             if u and u.strip()
         ]
-        self.top_image = self._get_top_image(doc, top_node, article_url)
+        self.top_image, self.top_images = self._get_top_image(doc, top_node, article_url)
 
     def _get_favicon(self, doc: lxml.html.Element) -> str:
         """Extract the favicon from a website http://en.wikipedia.org/wiki/Favicon
@@ -113,12 +113,6 @@ class ImageExtractor:
 
             return abs(len(path1) - len(path2))
 
-        if self.meta_image:
-            if not self.config.fetch_images or self._check_image_size(
-                self.meta_image, article_url
-            ):
-                return self.meta_image
-
         img_cand = []
         for img in parsers.get_tags(doc, tag="img"):
             if not img.get("src"):
@@ -135,11 +129,16 @@ class ImageExtractor:
 
         img_cand.sort(key=lambda x: x[1])
 
+        return_top_images = []
+
         for img in img_cand:
             if self._check_image_size(img[0].get("src"), article_url):
-                return img[0].get("src")
+                return_top_images.append(img[0].get("src"))
 
-        return ""
+        if return_top_images:
+            return return_top_images[0], return_top_images
+
+        return "", ""
 
     def _check_image_size(self, url: str, referer: Optional[str]) -> bool:
         img = self._fetch_image(
