@@ -48,6 +48,8 @@ class Configuration:
                     order to be considered top image
                 * ``max_retries``: maximum number of retries to download
                     the image (default 2)
+                * ``max_height_to_width_ratio``: maximum height-to-width ratio of image (default 1.2) in
+                    order to be considered top image
         memorize_articles (bool): If True, it will cache and save
             articles run between runs. The articles are *NOT* cached.
             It will save the parsed article urls between different
@@ -140,6 +142,7 @@ class Configuration:
             "min_height": 200,
             "min_area": 10000*100,
             "max_retries": 2,
+            "max_height_to_width_ratio": 1.2,
         }
 
         # Cache and save articles run after run
