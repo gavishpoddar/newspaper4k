@@ -157,6 +157,8 @@ class ImageExtractor:
             return False
         if self.config.top_image_settings["min_area"] > width * height:
             return False
+        if self.config.top_image_settings["max_height_to_width_ratio"] < height / width:
+            return False
 
         if (
             re.search(r"(logo|sprite)", url, re.IGNORECASE)
