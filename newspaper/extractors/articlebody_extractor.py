@@ -31,6 +31,7 @@ class ArticleBodyExtractor:
         self.top_node = None
         self.top_node_complemented = None
         self.stopwords: Optional[StopWords] = None
+        self.top_node_xpath = None
 
     def parse(self, doc: lxml.html.Element):
         """_summary_
@@ -62,6 +63,7 @@ class ArticleBodyExtractor:
         if parent_nodes:
             parent_nodes.sort(key=parsers.get_node_gravity_score, reverse=True)
             top_node = parent_nodes[0]
+            self.top_node_xpath = self.get_xpath(top_node)
 
         return top_node
 
@@ -447,3 +449,12 @@ class ArticleBodyExtractor:
             # new_node.extend(content_items)
 
         return new_node
+
+    def get_xpath(self, node: lxml.html.Element) -> str:
+        """Returns the XPath of a given node.
+        Args:
+            node (lxml.html.Element): The node to get the XPath for.
+        Returns:
+            str: The XPath of the node.
+        """
+        return tree.getpath(node)

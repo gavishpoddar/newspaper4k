@@ -181,3 +181,23 @@ class ContentExtractor:
             List[str]: list of video urls
         """
         return self.video_extractor.parse(doc, top_node)
+
+    def get_starting_xpath(self, doc: lxml.html.Element) -> str:
+        """Returns the XPath of the starting node of the article.
+        Args:
+            doc (lxml.html.Element): The document to extract the starting XPath from.
+        Returns:
+            str: The XPath of the starting node.
+        """
+        top_node = self.calculate_best_node(doc)
+        return self.article_body_extractor.get_xpath(top_node)
+
+    def get_ending_xpath(self, doc: lxml.html.Element) -> str:
+        """Returns the XPath of the ending node of the article.
+        Args:
+            doc (lxml.html.Element): The document to extract the ending XPath from.
+        Returns:
+            str: The XPath of the ending node.
+        """
+        top_node = self.calculate_best_node(doc)
+        return self.article_body_extractor.get_xpath(top_node)

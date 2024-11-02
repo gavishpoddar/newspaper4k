@@ -31,6 +31,7 @@ from .utils import (
     get_available_languages,
     extract_meta_refresh,
 )
+from .extractors.articlebody_extractor import ArticleBodyExtractor
 
 log = logging.getLogger(__name__)
 
@@ -579,6 +580,8 @@ class Article:
             log.debug("%s caught for no media no text", self.url)
             return False
 
+
+
         if self.title is None or len(self.title.split(" ")) < 2:
             log.debug("%s caught for bad title", self.url)
             return False
@@ -902,3 +905,53 @@ class Article:
             repr_ += f"\n\n {self.text}"
 
         return repr_
+
+    def get_raw_html(self) -> str:
+        """Extracts the raw HTML of the article body using ArticleBodyExtractor.
+        Returns:
+            str: The raw HTML of the article body.
+        """
+        self.throw_if_not_downloaded_verbose()
+        self.throw_if_not_parsed_verbose()
+
+        extractor = ArticleBodyExtractor(self.config)
+        doc = parsers.fromstring(self.html)
+        extractor.parse(doc)
+
+        return parsers.node_to_string(extractor.top_node_complemented)
+
+    def get_starting_xpath(self) -> str:
+        """Returns the XPath of the starting node of the article.
+        Returns:
+            str: The XPath of the starting node.
+        """
+        self.throw_if_not_downloaded_verbose()
+        self.throw_if_not_parsed_verbose()
+
+        return self.extractor.get_starting_xpath(self.doc)
+
+    def get_ending_xpath(self) -> str:
+        """Returns the XPath of the ending node of the article.
+        Returns:
+            str: The XPath of the ending node.
+        """
+        self.throw_if_not_downloaded_verbose()
+        self.throw_if_not_parsed_verbose()
+
+        return self.extractor.get_ending_xpath(self.doc)
+
+    @property
+    def starting_xpath(self) -> str:
+        """Exposes the XPath of the starting node of the article.
+        Returns:
+            str: The XPath of the starting node.
+        """
+        return self.get_starting_xpath()
+
+    @property
+    def ending_xpath(self) -> str:
+        """Exposes the XPath of the ending node of the article.
+        Returns:
+            str: The XPath of the ending node.
+        """
+        return self.get_ending_xpath()

@@ -334,3 +334,19 @@ class TestArticle:
         for img_url in images:
             assert img_url in article.images
             assert article._check_image_size(img_url)
+
+    def test_get_starting_xpath(self, cnn_article):
+        article = newspaper.Article(cnn_article["url"], fetch_images=False)
+        article.download(input_html=cnn_article["html_content"])
+        article.parse()
+        starting_xpath = article.get_starting_xpath()
+        assert starting_xpath is not None
+        assert starting_xpath.startswith("/html")
+
+    def test_get_ending_xpath(self, cnn_article):
+        article = newspaper.Article(cnn_article["url"], fetch_images=False)
+        article.download(input_html=cnn_article["html_content"])
+        article.parse()
+        ending_xpath = article.get_ending_xpath()
+        assert ending_xpath is not None
+        assert ending_xpath.startswith("/html")
