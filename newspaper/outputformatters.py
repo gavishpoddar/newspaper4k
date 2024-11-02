@@ -285,9 +285,3 @@ class OutputFormatter:
             if re.search(settings.ADVERTISEMENT_ATTR_VALUES, attrs, re.IGNORECASE):
                 parsers.remove(el)
                 continue
-
-    def get_article_html(self, top_node: lxml.html.HtmlElement) -> str:
-        """Returns the actual HTML of the top node."""
-        if top_node is None:
-            return ""
-        return parsers.node_to_string(top_node)
