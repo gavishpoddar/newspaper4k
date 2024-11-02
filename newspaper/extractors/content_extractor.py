@@ -168,6 +168,10 @@ class ContentExtractor:
 
         return self.article_body_extractor.top_node
 
+    def get_article_html(self) -> Optional[str]:
+        """Returns the actual HTML of the top node."""
+        return self.article_body_extractor.get_article_html()
+
     def get_videos(
         self, doc: lxml.html.Element, top_node: lxml.html.Element
     ) -> List[Video]:
