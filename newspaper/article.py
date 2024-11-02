@@ -31,6 +31,7 @@ from .utils import (
     get_available_languages,
     extract_meta_refresh,
 )
+from .extractors.articlebody_extractor import ArticleBodyExtractor
 
 log = logging.getLogger(__name__)
 
@@ -902,3 +903,17 @@ class Article:
             repr_ += f"\n\n {self.text}"
 
         return repr_
+
+    def get_raw_html(self) -> str:
+        """Extracts the raw HTML of the article body using ArticleBodyExtractor.
+        Returns:
+            str: The raw HTML of the article body.
+        """
+        self.throw_if_not_downloaded_verbose()
+        self.throw_if_not_parsed_verbose()
+
+        extractor = ArticleBodyExtractor(self.config)
+        doc = parsers.fromstring(self.html)
+        extractor.parse(doc)
+
+        return parsers.node_to_string(extractor.top_node_complemented)
