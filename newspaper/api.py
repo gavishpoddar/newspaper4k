@@ -13,7 +13,6 @@ from newspaper.configuration import Configuration
 from newspaper.settings import POPULAR_URLS, TRENDING_URL
 from newspaper.source import Source
 from newspaper.utils import print_available_languages
-from newspaper.extractors.articlebody_extractor import ArticleBodyExtractor
 
 
 def build(
@@ -124,20 +123,3 @@ def fulltext(html: str, language: str = "en") -> str:
     top_node = extractor.top_node_complemented
     text, _ = output_formatter.get_formatted(top_node)
     return text
-
-
-def get_raw_html(html: str, language: str = "en") -> str:
-    """Takes article HTML string input and outputs the raw
-    article HTML. No Title, Author, Date parsing is done.
-    No http requests are performed.
-    """
-    config = Configuration()
-    config.language = language
-    config.fetch_images = False
-
-    extractor = ArticleBodyExtractor(config)
-
-    doc = parsers.fromstring(html)
-    extractor.parse(doc)
-
-    return parsers.node_to_string(extractor.top_node_complemented)
