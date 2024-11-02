@@ -275,15 +275,6 @@ class Article:
         self.meta_favicon = ""
 
         # Meta site_name field in HTML source
-        self.meta_description = ""
-
-        # Meta language field in HTML source
-        self.meta_lang = ""
-
-        # Meta favicon field in HTML source
-        self.meta_favicon = ""
-
-        # Meta site_name field in HTML source
         self.meta_site_name = ""
 
         # Meta tags contain a lot of structured data, e.g. OpenGraph
@@ -911,25 +902,3 @@ class Article:
             repr_ += f"\n\n {self.text}"
 
         return repr_
-
-    def get_entire_html(self) -> str:
-        """Returns the entire HTML of the article along with all components like images.
-        Returns:
-            str: The entire HTML of the article.
-        """
-        self.throw_if_not_downloaded_verbose()
-        self.throw_if_not_parsed_verbose()
-
-        document_cleaner = DocumentCleaner(self.config)
-        output_formatter = OutputFormatter(self.config)
-
-        if self.top_node is not None:
-            self._top_node_complemented = document_cleaner.clean(
-                self._top_node_complemented
-            )
-            _, article_html = output_formatter.get_formatted(
-                self._top_node_complemented, self.title
-            )
-            return article_html
-
-        return ""
