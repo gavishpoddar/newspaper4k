@@ -31,6 +31,7 @@ class ArticleBodyExtractor:
         self.top_node = None
         self.top_node_complemented = None
         self.stopwords: Optional[StopWords] = None
+        self.article_html = None
 
     def parse(self, doc: lxml.html.Element):
         """_summary_
@@ -41,6 +42,7 @@ class ArticleBodyExtractor:
         self.stopwords = StopWords(self.config.language)
         self.top_node = self.calculate_best_node(doc)
         self.top_node_complemented = self.complement_with_siblings(self.top_node)
+        self.article_html = parsers.node_to_string(self.top_node_complemented)
 
     def calculate_best_node(self, doc):
         top_node = None
@@ -120,7 +122,7 @@ class ArticleBodyExtractor:
                 parent_node.getparent() if parent_node is not None else None
             )
 
-            self.update_node_count(parent_parent_node, 1)
+            self.update_node_count(parent_parent_parent_node, 1)
             self.update_score(
                 parent_parent_node, upscore * score_weights["parent_parent_node"]
             )
@@ -447,3 +449,7 @@ class ArticleBodyExtractor:
             # new_node.extend(content_items)
 
         return new_node
+
+    def get_article_html(self) -> Optional[str]:
+        """Returns the actual HTML of the top node."""
+        return self.article_html
