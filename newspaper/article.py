@@ -580,6 +580,7 @@ class Article:
             log.debug("%s caught for no media no text", self.url)
             return False
 
+
         if self.title is None or len(self.title.split(" ")) < 2:
             log.debug("%s caught for bad title", self.url)
             return False
