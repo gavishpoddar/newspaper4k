@@ -334,3 +334,12 @@ class TestArticle:
         for img_url in images:
             assert img_url in article.images
             assert article._check_image_size(img_url)
+
+    def test_get_article_html(self, cnn_article):
+        article = newspaper.Article(cnn_article["url"], fetch_images=False)
+        article.download(input_html=cnn_article["html_content"])
+        article.parse()
+        article_html = article.get_article_html()
+        assert article_html is not None
+        assert "<html>" in article_html
+        assert "</html>" in article_html

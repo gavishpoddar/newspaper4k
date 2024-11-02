@@ -409,14 +409,13 @@ class Article:
             doc = parsers.fromstring(html)
             for read_more_node in doc.xpath(self.read_more_link):
                 # TODO: add check for onclick redirections. need some examples
-                if read_more_node.get("href"):
-                    new_url = read_more_node.get("href")
+                if (href := read_more_node.get("href")):
+                    new_url = urls.prepare_url(href, self.url)
                     log.info(
                         "After downloading %s, found read more link: %s",
                         self.url,
                         new_url,
                     )
-                    new_url = urls.prepare_url(new_url, self.url)
                     html_ = self._parse_scheme_http(new_url)
                     if html_ is not None:
                         html = html_
@@ -902,3 +901,7 @@ class Article:
             repr_ += f"\n\n {self.text}"
 
         return repr_
+
+    def get_article_html(self) -> Optional[str]:
+        """Returns the actual HTML of the top node."""
+        return self.article_html
