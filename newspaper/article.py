@@ -519,6 +519,39 @@ class Article:
         self.images = self.extractor.image_extractor.images
         self.meta_favicon = self.extractor.image_extractor.favicon
 
+    def get_images(self) -> List[str]:
+        """Fetch all images from the article and filter them based on top_image_settings.
+        Returns:
+            List[str]: List of successful images.
+        """
+        successful_images = []
+        for img_url in self.images:
+            if self._check_image_size(img_url):
+                successful_images.append(img_url)
+        return successful_images
+
+    def _check_image_size(self, img_url: str) -> bool:
+        """Check if the image meets the requirements specified in top_image_settings.
+        Args:
+            img_url (str): The URL of the image to check.
+        Returns:
+            bool: True if the image meets the requirements, False otherwise.
+        """
+        img = self.extractor.image_extractor._fetch_image(img_url, self.url)
+        if not img:
+            return False
+
+        width, height = img.size
+
+        if self.config.top_image_settings["min_width"] > width:
+            return False
+        if self.config.top_image_settings["min_height"] > height:
+            return False
+        if self.config.top_image_settings["min_area"] > width * height:
+            return False
+
+        return True
+
     def is_valid_url(self):
         """Performs a check on the url of this link to determine if article
         is a real news article or not
