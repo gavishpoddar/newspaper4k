@@ -322,3 +322,15 @@ class TestArticle:
 
         article_ = pickle.load(bytes_io)
         assert article == article_
+
+    def test_get_images(self):
+        url = "http://www.cnn.com/2013/11/27/travel/weather-thanksgiving/index.html?iref=allsearch"
+        html_content = conftest.get_data("cnn_article", "html")
+        article = Article(url, fetch_images=True)
+        article.download(input_html=html_content)
+        article.parse()
+        images = article.get_images()
+        assert len(images) > 0
+        for img_url in images:
+            assert img_url in article.images
+            assert article._check_image_size(img_url)
