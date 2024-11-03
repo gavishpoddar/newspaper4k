@@ -334,3 +334,35 @@ class TestArticle:
         for img_url in images:
             assert img_url in article.images
             assert article._check_image_size(img_url)
+
+    def test_get_starting_node_xpath(self, cnn_article):
+        article = newspaper.Article(cnn_article["url"], fetch_images=False)
+        article.download(input_html=cnn_article["html_content"])
+        article.parse()
+        starting_node_xpath = article.get_starting_node_xpath()
+        assert starting_node_xpath is not None
+        assert starting_node_xpath.startswith("/html")
+
+    def test_get_ending_node_xpath(self, cnn_article):
+        article = newspaper.Article(cnn_article["url"], fetch_images=False)
+        article.download(input_html=cnn_article["html_content"])
+        article.parse()
+        ending_node_xpath = article.get_ending_node_xpath()
+        assert ending_node_xpath is not None
+        assert ending_node_xpath.startswith("/html")
+
+    def test_starting_node_xpath_property(self, cnn_article):
+        article = newspaper.Article(cnn_article["url"], fetch_images=False)
+        article.download(input_html=cnn_article["html_content"])
+        article.parse()
+        starting_node_xpath = article.starting_node_xpath
+        assert starting_node_xpath is not None
+        assert starting_node_xpath.startswith("/html")
+
+    def test_ending_node_xpath_property(self, cnn_article):
+        article = newspaper.Article(cnn_article["url"], fetch_images=False)
+        article.download(input_html=cnn_article["html_content"])
+        article.parse()
+        ending_node_xpath = article.ending_node_xpath
+        assert ending_node_xpath is not None
+        assert ending_node_xpath.startswith("/html")

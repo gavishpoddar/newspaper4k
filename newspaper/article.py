@@ -917,3 +917,37 @@ class Article:
         extractor.parse(doc)
 
         return parsers.node_to_string(extractor.top_node_complemented)
+
+    def get_starting_node_xpath(self) -> Optional[str]:
+        """Retrieve the XPath of the starting node of the article.
+        Returns:
+            Optional[str]: The XPath of the starting node, or None if not found.
+        """
+        if self.top_node is None:
+            return None
+        return self.extractor.get_starting_node_xpath(self.top_node)
+
+    def get_ending_node_xpath(self) -> Optional[str]:
+        """Retrieve the XPath of the ending node of the article.
+        Returns:
+            Optional[str]: The XPath of the ending node, or None if not found.
+        """
+        if self.top_node is None:
+            return None
+        return self.extractor.get_ending_node_xpath(self.top_node)
+
+    @property
+    def starting_node_xpath(self) -> Optional[str]:
+        """Expose the XPath of the starting node of the article.
+        Returns:
+            Optional[str]: The XPath of the starting node, or None if not found.
+        """
+        return self.get_starting_node_xpath()
+
+    @property
+    def ending_node_xpath(self) -> Optional[str]:
+        """Expose the XPath of the ending node of the article.
+        Returns:
+            Optional[str]: The XPath of the ending node, or None if not found.
+        """
+        return self.get_ending_node_xpath()

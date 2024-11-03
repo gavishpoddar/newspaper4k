@@ -285,3 +285,26 @@ class OutputFormatter:
             if re.search(settings.ADVERTISEMENT_ATTR_VALUES, attrs, re.IGNORECASE):
                 parsers.remove(el)
                 continue
+
+    def get_starting_node_xpath(self, top_node: lxml.html.HtmlElement) -> Optional[str]:
+        """Extract the XPath of the starting node of the article.
+        Args:
+            top_node (lxml.html.HtmlElement): The top node of the article.
+        Returns:
+            Optional[str]: The XPath of the starting node, or None if not found.
+        """
+        if top_node is None:
+            return None
+        return top_node.getroottree().getpath(top_node)
+
+    def get_ending_node_xpath(self, top_node: lxml.html.HtmlElement) -> Optional[str]:
+        """Extract the XPath of the ending node of the article.
+        Args:
+            top_node (lxml.html.HtmlElement): The top node of the article.
+        Returns:
+            Optional[str]: The XPath of the ending node, or None if not found.
+        """
+        if top_node is None:
+            return None
+        last_node = top_node.xpath(".//*[not(*)]")[-1]
+        return last_node.getroottree().getpath(last_node)
