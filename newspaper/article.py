@@ -217,6 +217,8 @@ class Article:
         # URL of the "best image" to represent this article
         self.top_image = ""
 
+        self.top_images = []
+
         # stores image provided by metadata
         self.meta_img = ""
 
@@ -513,6 +515,7 @@ class Article:
 
         self.meta_img = self.extractor.image_extractor.meta_image
         self.top_image = self.extractor.image_extractor.top_image
+        self.top_images = self.extractor.image_extractor.top_images
         self.images = self.extractor.image_extractor.images
         self.meta_favicon = self.extractor.image_extractor.favicon
 

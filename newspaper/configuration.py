@@ -138,7 +138,7 @@ class Configuration:
         self.top_image_settings = {
             "min_width": 300,
             "min_height": 200,
-            "min_area": 10000,
+            "min_area": 10000 * 100,
             "max_retries": 2,
         }
 

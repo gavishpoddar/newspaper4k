@@ -23,6 +23,7 @@ class ImageExtractor:
     def __init__(self, config: Configuration) -> None:
         self.config = config
         self.top_image: Optional[str] = None
+        self.top_images: List[str] = []
         self.meta_image: Optional[str] = None
         self.images: List[str] = []
         self.favicon: Optional[str] = None
@@ -47,7 +48,7 @@ class ImageExtractor:
             # were not found in some cases (times_001.html)
             if u and u.strip()
         ]
-        self.top_image = self._get_top_image(doc, top_node, article_url)
+        self.top_image, self.top_images = self._get_top_image(doc, top_node, article_url)
 
     def _get_favicon(self, doc: lxml.html.Element) -> str:
         """Extract the favicon from a website http://en.wikipedia.org/wiki/Favicon
@@ -104,6 +105,9 @@ class ImageExtractor:
     def _get_top_image(
         self, doc: lxml.html.Element, top_node: lxml.html.Element, article_url: str
     ) -> str:
+        
+        return_top_images = []
+
         def node_distance(node1, node2):
             path1 = node1.getroottree().getpath(node1).split("/")
             path2 = node2.getroottree().getpath(node2).split("/")
@@ -117,7 +121,7 @@ class ImageExtractor:
             if not self.config.fetch_images or self._check_image_size(
                 self.meta_image, article_url
             ):
-                return self.meta_image
+                return_top_images.append(self.meta_image)
 
         img_cand = []
         for img in parsers.get_tags(doc, tag="img"):
@@ -131,15 +135,17 @@ class ImageExtractor:
                 img_cand.append((img, distance))
             else:
                 if self._check_image_size(img.get("src"), article_url):
-                    return img.get("src")
+                    return_top_images.append(img.get("src"))
 
         img_cand.sort(key=lambda x: x[1])
 
         for img in img_cand:
             if self._check_image_size(img[0].get("src"), article_url):
-                return img[0].get("src")
+                return_top_images.append(img[0].get("src"))
 
-        return ""
+        if return_top_images:
+            return return_top_images[0], return_top_images
+        return "", ""
 
     def _check_image_size(self, url: str, referer: Optional[str]) -> bool:
         img = self._fetch_image(
